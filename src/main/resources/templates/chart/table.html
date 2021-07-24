@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+	<head th:replace="base :: headCust"></head>
+	<body>
+		<div th:replace="base :: navlinks">	</div>
+		<h3> Tabela da API: Alpha Vantage</h3>
+		
+		<table class="hovertable table" border="1">
+		    <tr>
+		        <thead>
+		            <th>ID</th>
+		            <th>Data</th>
+		            <th>Valor</th>
+		        </thead>
+		    </tr>
+		    <tbody>
+		
+		    </tbody>
+		</table> 
+		
+		<div th:replace="base :: footer"></div>
+		<script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+	  	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+
+		<script>	
+			var json_length;	
+			var x_axis = [];
+			var y_axis = [];
+			var output_html = [];
+			var aux;
+			var api_data;
+			var api_data_2;
+			var xhr = new XMLHttpRequest();
+			//console.log(xhr);	
+			xhr.responseType = "json";
+			xhr.onreadystatechange = function(){
+				if(xhr.readyState == 4 && xhr.status == 200){
+					api_data = xhr.response;
+					api_data = api_data.annualEarnings;
+					json_length = api_data.length;
+					//console.log(api_data[0].fiscalDateEnding);
+					//console.log(api_data[0].reportedEPS);
+					//console.log(api_data.length);
+					//console.log(api_data);
+					for(i = 0; i< json_length; i++){
+						var add = x_axis.push(api_data[i].fiscalDateEnding);
+						//console.log(api_data[i].fiscalDateEnding);
+					}
+					for(i = 0; i< json_length; i++){
+						var add = y_axis.push(api_data[i].reportedEPS);
+						//console.log(api_data[i].fiscalDateEnding);
+					}				
+					
+		            var table = document.querySelector(".table tbody")
+		            //pegando a tabela  
+		
+		            //inserindo dinamicamente o objeto dentro da tabela  
+					for(i = 0; i< json_length; i++){
+		                var aux = output_html.push("<tr><td>"+ i + "</td><td>" +api_data[i].fiscalDateEnding + "</td><td>" +api_data[i].reportedEPS + "</td></tr>"); 
+		                table.innerHTML = output_html;
+		            }  
+	
+				}
+			}
+			
+			
+			xhr.open("GET","https://www.alphavantage.co/query?function=EARNINGS&symbol=IBM&apikey=U2S7G1Z71EWPKQJ9");
+			xhr.send();
+		
+			
+		</script>
+	</body>
+</html>
